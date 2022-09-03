@@ -1,12 +1,12 @@
 // This is the main layout of our app. It renders the header and the footer.
 
 import {
+  ErrorBoundary,
   Head,
+  Layout,
   Link,
   StyledLink,
-  Layout,
   useQuery,
-  ErrorBoundary,
 } from "rakkasjs";
 import { createContext, FC } from "react";
 
@@ -75,19 +75,22 @@ const MainLayout: Layout = ({ children }) => {
         </nav>
       </header>
       <ErrorBoundary
-        fallbackRender={({ error, resetErrorBoundary }) => (
-          <div>
-            <h1>An error has occurred</h1>
-            <pre>{error.message}</pre>
-            <button
-              onClick={() => {
-                resetErrorBoundary();
-              }}
-            >
-              Try again
-            </button>
-          </div>
-        )}
+        fallbackRender={({ error, resetErrorBoundary }) => {
+          return (
+            <div>
+              {/* {error.status && <ResponseHeaders status={error.status} />} */}
+              <h1>An error has occurred</h1>
+              <pre>{error.message}</pre>
+              <button
+                onClick={() => {
+                  resetErrorBoundary();
+                }}
+              >
+                Try again
+              </button>
+            </div>
+          );
+        }}
       >
         <RootDataProvider>
           <section className={css.main}>{children}</section>
