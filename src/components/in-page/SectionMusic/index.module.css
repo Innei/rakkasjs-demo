@@ -1,0 +1,109 @@
+.kami-music {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 3em;
+
+  .sticky-cover {
+    position: sticky;
+    top: 5rem;
+  }
+
+  * {
+    font-size: 16px;
+  }
+}
+
+.music-list {
+  flex: 1 1 20em;
+  overflow: hidden;
+  max-height: 30em;
+}
+
+.music-list ul > li,
+.song-item {
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0.75em 1em;
+  border-radius: 0.5em;
+  transition: background 1s steps(30);
+  display: flex;
+  word-break: break-all;
+
+  &:hover {
+    @apply bg-gray-5 bg-opacity-10;
+  }
+
+  .num {
+    opacity: 0.6;
+    margin-right: 0.75em;
+    width: 3ch;
+    text-align: right;
+
+    @apply flex-shrink-0;
+
+    &::after {
+      content: '.';
+    }
+  }
+
+  &.playing {
+    background: linear-gradient(to right, #8e9eab, var(--gray-5));
+    background-repeat: no-repeat;
+
+    .num {
+      @apply text-gray-1;
+    }
+
+    .num::after {
+      @apply hidden;
+    }
+  }
+}
+
+.kami-music.active {
+  .music-list {
+    max-height: 100%;
+  }
+}
+
+.music-cover {
+  flex: 0 0 10em;
+  margin-right: 2em;
+  text-align: center;
+  position: relative;
+
+  img {
+    border-radius: 66%;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  h3 {
+    margin-top: 1em;
+  }
+
+  .fixed-cover {
+    margin: auto;
+    max-width: 10em;
+  }
+
+  .fixed-cover.fixed {
+    top: 7em;
+    position: fixed;
+  }
+
+  .fixed-cover.bottom {
+    bottom: 0;
+    position: absolute;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .music-cover {
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin-right: 0;
+    margin-bottom: 1em;
+  }
+}

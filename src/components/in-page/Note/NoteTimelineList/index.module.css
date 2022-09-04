@@ -1,0 +1,46 @@
+.container {
+  @apply absolute top-0 bottom-0 leading-[1.8];
+
+  left: -1.4rem;
+  transform: translateX(-100%);
+  font-family: var(--sans-font);
+
+  color: var(--shizuku-text-color);
+
+  &:hover {
+    .item {
+      @apply text-gray-1 opacity-100;
+    }
+  }
+}
+
+.list {
+  @apply sticky;
+
+  top: 50vh;
+  transform: translateY(-50%);
+  width: calc(10rem + 12px);
+  max-height: calc(100vh - 20em);
+
+  li:hover .item {
+    @apply text-primary;
+  }
+}
+
+.item {
+  @apply opacity-80 text-left text-gray-1 truncate min-w-0;
+
+  width: 10rem;
+  transition: opacity 0.5s, margin 0.5s, color 0.5s;
+  font-variant-numeric: tabular-nums;
+
+  &.active {
+    @apply ml-2 opacity-100;
+  }
+}
+
+@screen tablet {
+  .container {
+    @apply hidden;
+  }
+}

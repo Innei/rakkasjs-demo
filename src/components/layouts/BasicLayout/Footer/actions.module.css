@@ -1,0 +1,59 @@
+.message-btn {
+  position: relative;
+}
+
+.message-btn.count::before {
+  content: attr(data-count);
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 1rem;
+  width: 1rem;
+  background: var(--red);
+  border-radius: 50%;
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  animation: fade-small-large 0.5s both;
+}
+
+.action {
+  z-index: 9;
+  right: 1rem;
+  bottom: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom));
+  width: 2.25em;
+  position: fixed;
+  font-size: 1.2em;
+  transition: bottom 0.3s, transform 0.5s;
+}
+
+.action button {
+  width: 2.25em;
+  height: 2.25em;
+  color: var(--brown);
+  margin-top: 0.5em;
+  background: var(--light-bg);
+  border-radius: 66%;
+  transition: transform 0.3s;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  @apply shadow-out-sm;
+}
+
+.action .top {
+  transform: scale(0);
+}
+
+.action .top.active {
+  transform: scale(1);
+}
+
+.action.hidden {
+  transform: translateX(200%);
+}

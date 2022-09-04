@@ -1,5 +1,5 @@
 import { useQuery } from "rakkasjs";
-import { FC } from "react";
+import type { FC } from "react";
 
 class RequestError extends Error {
   constructor(message: string, public status: number) {
