@@ -1,7 +1,14 @@
 import shuffle from 'lodash-es/shuffle'
 import { navigate } from 'rakkasjs'
 import type { FC } from 'react'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  createElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { TransitionGroup } from 'react-transition-group'
 
 import type { AggregateTop } from '@mx-space/api-client'
@@ -83,8 +90,12 @@ const _Sections: FC<AggregateTop> = ({ notes, posts }) => {
   const [showLikeThisNotice, setShowLikeThisNotice] = useState(false)
 
   const SectionCompList = [
-    <SectionNews {...sections.current.postSection} key="1" />,
-    <SectionNews {...sections.current.noteSection} key="2" />,
+    // <SectionNews {...sections.current.postSection} key="1" />,
+    // <SectionNews {...sections.current.noteSection} key="2" />,
+
+    createElement(SectionNews, { ...sections.current.postSection, key: '1' }),
+    createElement(SectionNews, { ...sections.current.noteSection, key: '2' }),
+
     <SectionWrap
       title="朋友们"
       moreUrl="friends"

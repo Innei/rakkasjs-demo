@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify'
 
 import 'virtual:windi.css'
 import '../assets/styles/main.css'
+import '../assets/styles/shizuku.css'
 
 import { AppLayout } from '~/components/layouts/AppLayout'
 import { BasicLayout } from '~/components/layouts/BasicLayout'
@@ -32,6 +33,7 @@ const MainLayout: Layout = ({ children, params }) => {
           )
         }}
       >
+        {/* FIXME nest body */}
         <head>
           <style
             dangerouslySetInnerHTML={{

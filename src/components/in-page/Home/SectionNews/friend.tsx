@@ -1,6 +1,6 @@
 import shuffle from 'lodash-es/shuffle'
 import type { FC } from 'react'
-import { memo, useEffect, useState } from 'react'
+import { createElement, memo, useEffect, useState } from 'react'
 
 import type { LinkModel } from '@mx-space/api-client'
 import { LinkState, LinkType } from '@mx-space/api-client'
@@ -39,7 +39,7 @@ export const FriendsSection: FC = memo(() => {
   return (
     <div className={styles['friends-wrap']}>
       {friends.map((item) => {
-        return <FriendItem {...item} key={item.id} />
+        return createElement(FriendItem, { ...item, key: item.id })
       })}
     </div>
   )
