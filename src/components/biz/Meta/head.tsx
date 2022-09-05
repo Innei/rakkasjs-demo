@@ -1,31 +1,31 @@
-import { Head } from "rakkasjs";
-import type { FC } from "react";
-import React, { memo, useInsertionEffect } from "react";
+import { Head } from 'rakkasjs'
+import type { FC } from 'react'
+import React, { memo, useInsertionEffect } from 'react'
 
-import { API_URL } from "~/constants/env";
-import { useInitialData, useKamiConfig } from "~/hooks/use-initial-data";
-import { isDev } from "~/utils/env";
-import { loadScript } from "~/utils/load-script";
+import { API_URL } from '~/constants/env'
+import { useInitialData, useKamiConfig } from '~/hooks/use-initial-data'
+import { isDev } from '~/utils/env'
+import { loadScript } from '~/utils/load-script'
 
 export const DynamicHeadMeta: FC = memo(() => {
-  const initialData = useInitialData();
-  const title = initialData.seo.title;
+  const initialData = useInitialData()
+  const title = initialData.seo.title
 
-  const themeConfig = useKamiConfig();
-  const favicon = themeConfig.site.favicon || "/favicon.svg";
+  const themeConfig = useKamiConfig()
+  const favicon = themeConfig.site.favicon || '/favicon.svg'
 
-  const { dark: darkBg, light: lightBg } = themeConfig.site.background.src;
+  const { dark: darkBg, light: lightBg } = themeConfig.site.background.src
   const { dark: darkFooter, light: lightFooter } =
-    themeConfig.site.footer.background.src;
-  const { css, js, script, style } = themeConfig.site.custom;
+    themeConfig.site.footer.background.src
+  const { css, js, script, style } = themeConfig.site.custom
 
   useInsertionEffect(() => {
-    js && js.length && js.forEach((src) => loadScript(src));
+    js && js.length && js.forEach((src) => loadScript(src))
 
     if (script) {
-      eval(script);
+      eval(script)
     }
-  }, []);
+  }, [])
 
   return (
     <Head>
@@ -47,7 +47,7 @@ export const DynamicHeadMeta: FC = memo(() => {
         ? css.map((href, i) => <link rel="stylesheet" href={href} key={i} />)
         : null}
       {initialData.seo.keywords && (
-        <meta name="keywords" content={initialData.seo.keywords.join(",")} />
+        <meta name="keywords" content={initialData.seo.keywords.join(',')} />
       )}
       {/* for pwa */}
       <meta name="application-name" content={title} />
@@ -67,5 +67,5 @@ export const DynamicHeadMeta: FC = memo(() => {
       <link rel="preload" href={darkFooter} as="image" />
       <link rel="preload" href={lightFooter} as="image" />
     </Head>
-  );
-});
+  )
+})

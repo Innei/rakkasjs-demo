@@ -1,18 +1,18 @@
-import { observer } from "mobx-react-lite";
-import { Link } from "rakkasjs";
+import { observer } from 'mobx-react-lite'
+import { Link } from 'rakkasjs'
 
-import { Divider } from "~/components/universal/Divider";
-import { store } from "~/store";
+import { Divider } from '~/components/universal/Divider'
+import { store } from '~/store'
 
 export const PostRelated = observer<{ id: string }>((props) => {
-  const posts = store.postStore;
-  const post = posts.get(props.id);
+  const posts = store.postStore
+  const post = posts.get(props.id)
   if (!post) {
-    return null;
+    return null
   }
 
   if (!post.related?.length) {
-    return null;
+    return null
   }
   return (
     <div data-hide-print>
@@ -31,9 +31,9 @@ export const PostRelated = observer<{ id: string }>((props) => {
                 {post.title}
               </Link>
             </li>
-          );
+          )
         })}
       </ul>
     </div>
-  );
-});
+  )
+})

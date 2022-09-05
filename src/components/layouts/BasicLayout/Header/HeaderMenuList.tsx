@@ -1,88 +1,88 @@
-import { useRouter } from "~/hooks/use-router.ts";
-import type { FC } from "react";
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
+import type { FC } from 'react'
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useKamiConfig } from "~/hooks/use-initial-data";
+import { useKamiConfig } from '~/hooks/use-initial-data'
+import { useRouter } from '~/hooks/use-router.ts'
 
-import { HeaderNavigationList } from "./HeaderNavigationList";
-import styles from "./index.module.css";
+import { HeaderNavigationList } from './HeaderNavigationList'
+import styles from './index.module.css'
 
 export const MenuList: FC = memo(() => {
-  const groupRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const kamiConfig = useKamiConfig();
+  const groupRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const kamiConfig = useKamiConfig()
   const ballIndex = useMemo(() => {
-    const asPath = router.asPath;
-    const menu = kamiConfig.site.header.menu;
+    const asPath = router.asPath
+    const menu = kamiConfig.site.header.menu
 
-    if (asPath === "" || asPath === "/") {
-      const idx = menu.findIndex((item) => item.type == "Home");
+    if (asPath === '' || asPath === '/') {
+      const idx = menu.findIndex((item) => item.type == 'Home')
 
-      return ~idx ? idx : -1;
+      return ~idx ? idx : -1
     }
-    const firstPath = asPath.split("/")[1];
+    const firstPath = asPath.split('/')[1]
 
     const inMenuIndex = menu.findIndex(
       (item) =>
-        item.path != "/" &&
+        item.path != '/' &&
         (asPath.startsWith(item.path) ||
-          item.subMenu?.find((subItem) => asPath.startsWith(subItem.path)))
-    );
+          item.subMenu?.find((subItem) => asPath.startsWith(subItem.path))),
+    )
 
     if (inMenuIndex > -1) {
-      return inMenuIndex;
+      return inMenuIndex
     }
     switch (firstPath) {
-      case "category":
-      case "posts": {
-        return menu.findIndex((item) => item.type == "Post");
+      case 'category':
+      case 'posts': {
+        return menu.findIndex((item) => item.type == 'Post')
       }
-      case "notes": {
-        return menu.findIndex((item) => item.type == "Note");
+      case 'notes': {
+        return menu.findIndex((item) => item.type == 'Note')
       }
-      case "says": {
-        return menu.findIndex((item) => item.path == "/says");
+      case 'says': {
+        return menu.findIndex((item) => item.path == '/says')
       }
-      case "timeline": {
-        return menu.findIndex((item) => item.path.startsWith("/timeline"));
+      case 'timeline': {
+        return menu.findIndex((item) => item.path.startsWith('/timeline'))
       }
-      case "friends": {
-        return menu.findIndex((item) => item.path == "/friends");
+      case 'friends': {
+        return menu.findIndex((item) => item.path == '/friends')
       }
-      case "recently": {
-        return menu.findIndex((item) => item.path.startsWith("/recently"));
+      case 'recently': {
+        return menu.findIndex((item) => item.path.startsWith('/recently'))
       }
 
       default:
-        return 0;
+        return 0
     }
-  }, [kamiConfig.site.header.menu, router.asPath]);
-  const [ballOffsetLeft, setBallOffsetLeft] = useState(0);
+  }, [kamiConfig.site.header.menu, router.asPath])
+  const [ballOffsetLeft, setBallOffsetLeft] = useState(0)
   useEffect(() => {
-    if (!groupRef.current || typeof ballIndex === "undefined") {
-      return;
+    if (!groupRef.current || typeof ballIndex === 'undefined') {
+      return
     }
 
-    const $group = groupRef.current;
-    const $child = $group.children.item(ballIndex) as HTMLElement;
+    const $group = groupRef.current
+    const $child = $group.children.item(ballIndex) as HTMLElement
 
     if ($child) {
       setBallOffsetLeft(
-        $child.offsetLeft + $child.getBoundingClientRect().width / 2
-      );
+        $child.offsetLeft + $child.getBoundingClientRect().width / 2,
+      )
     }
-  }, [ballIndex]);
+  }, [ballIndex])
 
   return (
-    <div className={styles["link-group"]} ref={groupRef}>
+    <div className={styles['link-group']} ref={groupRef}>
       <HeaderNavigationList />
 
       {ballOffsetLeft ? (
         <div
-          className={styles["anchor-ball"]}
+          className={styles['anchor-ball']}
           style={{ left: `${ballOffsetLeft}px` }}
         />
       ) : null}
     </div>
-  );
-});
+  )
+})

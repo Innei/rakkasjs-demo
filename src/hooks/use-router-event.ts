@@ -1,23 +1,23 @@
 // import { Router } from "next/router";
-import { useEffect } from "react";
+import QProgress from 'qier-progress'
+import { useEffect } from 'react'
 
-import { isClientSide, isServerSide } from "~/utils/env";
+import { isClientSide, isServerSide } from '~/utils/env'
 
-import QProgress from "qier-progress";
-import { useAnalyze } from "./use-analyze";
+import { useAnalyze } from './use-analyze'
 
 export const useRouterEvent = () => {
-  const { pageview } = useAnalyze();
+  const { pageview } = useAnalyze()
   useEffect(() => {
     if (isServerSide()) {
-      return;
+      return
     }
     const Progress = new QProgress({
       colorful: false,
-      color: "var(--primary)",
-    });
+      color: 'var(--primary)',
+    })
     if (isClientSide()) {
-      (window as any).process = Progress;
+      ;(window as any).process = Progress
     }
     // Router.events.on("routeChangeStart", () => {
     //   Progress.start();
@@ -36,5 +36,5 @@ export const useRouterEvent = () => {
     // });
 
     // Router.events.on("routeChangeComplete", (url) => pageview(url));
-  }, []);
-};
+  }, [])
+}

@@ -1,21 +1,20 @@
-import { Link } from "rakkasjs";
+import { Link } from 'rakkasjs'
+import type { FC } from 'react'
 
-import type { FC } from "react";
-
-import styles from "./list.module.css";
-import { ProjectIcon } from "./project-icon";
+import styles from './list.module.css'
+import { ProjectIcon } from './project-icon'
 
 export type Project = {
-  id: string;
-  avatar?: string;
-  name: string;
-  description?: string;
-};
+  id: string
+  avatar?: string
+  name: string
+  description?: string
+}
 export const ProjectList: FC<{ projects: Project[] }> = (props) => {
-  const projects = props.projects;
+  const projects = props.projects
 
   return (
-    <section className={styles["root"]} key={"list"}>
+    <section className={styles['root']} key={'list'}>
       <div className="grid grid-cols-3 <sm:grid-cols-1 <md:grid-cols-2 gap-12 xl:grid-cols-4">
         {projects.map((project) => {
           return (
@@ -32,9 +31,9 @@ export const ProjectList: FC<{ projects: Project[] }> = (props) => {
                 </span>
               </span>
             </Link>
-          );
+          )
         })}
       </div>
     </section>
-  );
-};
+  )
+}

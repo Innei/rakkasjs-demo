@@ -1,22 +1,21 @@
-import { observer } from "mobx-react-lite";
-import { Link } from "rakkasjs";
+import { observer } from 'mobx-react-lite'
+import { Link } from 'rakkasjs'
+import randomColor from 'randomcolor'
+import type { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react'
+import { forwardRef } from 'react'
 
-import randomColor from "randomcolor";
-import type { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
-import { forwardRef } from "react";
+import { IcBaselineArrowForwardIos } from '~/components/universal/Icons/for-home'
 
-import { IcBaselineArrowForwardIos } from "~/components/universal/Icons/for-home";
-
-import { useStore } from "../../../../store";
+import { useStore } from '../../../../store'
 
 export interface SectionNewsProps {
-  title: string;
-  icon: ReactNode;
-  moreUrl?: string;
-  color?: string;
-  size?: 4 | 6;
-  ref?: any;
-  showMoreIcon?: boolean;
+  title: string
+  icon: ReactNode
+  moreUrl?: string
+  color?: string
+  size?: 4 | 6
+  ref?: any
+  showMoreIcon?: boolean
 }
 
 export const SectionWrap = observer(
@@ -30,13 +29,13 @@ export const SectionWrap = observer(
       icon,
       moreUrl,
       color = randomColor({
-        luminosity: "dark",
+        luminosity: 'dark',
       }),
       showMoreIcon = true,
       ...rest
-    } = props;
-    const { appStore } = useStore();
-    const mode = appStore.colorMode;
+    } = props
+    const { appStore } = useStore()
+    const mode = appStore.colorMode
     return (
       <>
         <div className="news-item" ref={ref}>
@@ -45,7 +44,7 @@ export const SectionWrap = observer(
               className="title"
               style={{
                 backgroundColor: color,
-                filter: mode === "dark" ? "brightness(0.8)" : undefined,
+                filter: mode === 'dark' ? 'brightness(0.8)' : undefined,
               }}
               suppressHydrationWarning
             >
@@ -60,7 +59,7 @@ export const SectionWrap = observer(
                 className="more"
                 style={{
                   backgroundColor: color,
-                  filter: mode === "dark" ? "brightness(0.8)" : undefined,
+                  filter: mode === 'dark' ? 'brightness(0.8)' : undefined,
                 }}
               >
                 <Link href={moreUrl}>
@@ -76,6 +75,6 @@ export const SectionWrap = observer(
           </div>
         </div>
       </>
-    );
-  })
-);
+    )
+  }),
+)

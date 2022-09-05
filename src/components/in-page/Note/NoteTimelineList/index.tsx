@@ -1,73 +1,72 @@
 /**
  * 日记: 左侧时间线
  */
-import { clsx } from "clsx";
-import { observer } from "mobx-react-lite";
-import { Link } from "rakkasjs";
+import { clsx } from 'clsx'
+import { observer } from 'mobx-react-lite'
+import { Link } from 'rakkasjs'
+import type { FC } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 
-import type { FC } from "react";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useAutoAnimate } from '@formkit/auto-animate/react'
+import type { NoteModel } from '@mx-space/api-client'
 
-import { useAutoAnimate } from "@formkit/auto-animate/react";
-import type { NoteModel } from "@mx-space/api-client";
+import { ImpressionView } from '~/components/biz/ImpressionView'
+import { Divider } from '~/components/universal/Divider'
+import { FloatPopover } from '~/components/universal/FloatPopover'
+import { MaterialSymbolsArrowCircleRightOutlineRounded } from '~/components/universal/Icons/for-note'
+import { LeftRightTransitionView } from '~/components/universal/Transition/left-right'
+import { TrackerAction } from '~/constants/tracker'
+import { useAnalyze } from '~/hooks/use-analyze'
+import { useIsMounted } from '~/hooks/use-is-mounted'
+import { useStore } from '~/store'
+import { apiClient } from '~/utils/client'
 
-import { ImpressionView } from "~/components/biz/ImpressionView";
-import { Divider } from "~/components/universal/Divider";
-import { FloatPopover } from "~/components/universal/FloatPopover";
-import { MaterialSymbolsArrowCircleRightOutlineRounded } from "~/components/universal/Icons/for-note";
-import { LeftRightTransitionView } from "~/components/universal/Transition/left-right";
-import { TrackerAction } from "~/constants/tracker";
-import { useAnalyze } from "~/hooks/use-analyze";
-import { useIsMounted } from "~/hooks/use-is-mounted";
-import { useStore } from "~/store";
-import { apiClient } from "~/utils/client";
-
-import { InnerTopicDetail } from "../NoteTopic/inner-detail";
-import styles from "./index.module.css";
+import { InnerTopicDetail } from '../NoteTopic/inner-detail'
+import styles from './index.module.css'
 
 interface NoteTimelineListProps {
-  noteId: string;
+  noteId: string
 }
 
-type NotePartial = Pick<NoteModel, "id" | "nid" | "created" | "title">;
+type NotePartial = Pick<NoteModel, 'id' | 'nid' | 'created' | 'title'>
 
 const ObserveredNoteTimelineList: FC<
-  NoteTimelineListProps & JSX.IntrinsicElements["div"]
+  NoteTimelineListProps & JSX.IntrinsicElements['div']
 > = observer((props) => {
-  const { className, noteId } = props;
+  const { className, noteId } = props
 
-  const { noteStore } = useStore();
-  const note = noteStore.get(noteId);
-  const [list, setList] = useState<NotePartial[]>([note as any]);
-  const mountedRef = useIsMounted();
-  const requestNoteIdRef = useRef<string>();
+  const { noteStore } = useStore()
+  const note = noteStore.get(noteId)
+  const [list, setList] = useState<NotePartial[]>([note as any])
+  const mountedRef = useIsMounted()
+  const requestNoteIdRef = useRef<string>()
   useEffect(() => {
-    const now = +new Date();
-    requestNoteIdRef.current = noteId;
+    const now = +new Date()
+    requestNoteIdRef.current = noteId
 
-    let timer: any;
+    let timer: any
     apiClient.note.getMiddleList(noteId, 10).then(({ data }) => {
-      const gapTime = +new Date() - now;
+      const gapTime = +new Date() - now
       timer = setTimeout(
         () => {
           if (!mountedRef.current) {
-            return;
+            return
           }
 
           if (requestNoteIdRef.current !== noteId) {
-            return;
+            return
           }
 
-          setList(data);
+          setList(data)
         },
-        gapTime > 500 ? 0 : gapTime
-      );
-    });
+        gapTime > 500 ? 0 : gapTime,
+      )
+    })
 
-    return () => clearTimeout(timer);
-  }, [noteId]);
+    return () => clearTimeout(timer)
+  }, [noteId])
 
-  const { event } = useAnalyze();
+  const { event } = useAnalyze()
 
   const TopicComp = useCallback(
     () => (
@@ -83,17 +82,17 @@ const ObserveredNoteTimelineList: FC<
         <span className="flex-grow truncate">{note?.topic?.name}</span>
       </Link>
     ),
-    [note?.topic?.name, note?.topic?.slug]
-  );
+    [note?.topic?.name, note?.topic?.slug],
+  )
 
-  const [animationParent] = useAutoAnimate<HTMLUListElement>();
+  const [animationParent] = useAutoAnimate<HTMLUListElement>()
   return (
-    <div className={clsx(className, styles["container"])} data-hide-print>
+    <div className={clsx(className, styles['container'])} data-hide-print>
       <div className={clsx(styles.list)}>
         <ul ref={animationParent}>
           {list.map((item) => {
-            const isCurrent = item.id === noteId;
-            return <MemoedItem key={item.id} item={item} active={isCurrent} />;
+            const isCurrent = item.id === noteId
+            return <MemoedItem key={item.id} item={item} active={isCurrent} />
           })}
         </ul>
         {note?.topic && (
@@ -120,16 +119,16 @@ const ObserveredNoteTimelineList: FC<
         )}
       </div>
     </div>
-  );
-});
+  )
+})
 
 export const MemoedItem = memo<{
-  active: boolean;
-  item: NotePartial;
+  active: boolean
+  item: NotePartial
 }>(
   (props) => {
-    const { active, item } = props;
-    console.log("render", item.id);
+    const { active, item } = props
+    console.log('render', item.id)
 
     return (
       <li className="flex items-center">
@@ -137,14 +136,14 @@ export const MemoedItem = memo<{
           <MaterialSymbolsArrowCircleRightOutlineRounded className="text-pink" />
         </LeftRightTransitionView>
         <Link
-          className={clsx(active ? styles["active"] : null, styles.item)}
+          className={clsx(active ? styles['active'] : null, styles.item)}
           href={`/notes/${item.nid}`}
           key={item.id}
         >
           {item.title}
         </Link>
       </li>
-    );
+    )
   },
   (prevProps, nextProps) => {
     return (
@@ -152,18 +151,18 @@ export const MemoedItem = memo<{
       prevProps.item.id === nextProps.item.id &&
       prevProps.item.title === nextProps.item.title &&
       prevProps.item.nid === nextProps.item.nid
-    );
-  }
-);
+    )
+  },
+)
 
 export const NoteTimelineList: FC<
-  NoteTimelineListProps & JSX.IntrinsicElements["div"]
+  NoteTimelineListProps & JSX.IntrinsicElements['div']
 > = observer((props) => {
   const {
     appUIStore: { isNarrowThanLaptop: isWiderThanLaptop },
-  } = useStore();
+  } = useStore()
   if (isWiderThanLaptop) {
-    return null;
+    return null
   }
-  return <ObserveredNoteTimelineList {...props} />;
-});
+  return <ObserveredNoteTimelineList {...props} />
+})

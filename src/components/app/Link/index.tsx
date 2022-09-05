@@ -1,4 +1,5 @@
-import { Link as RakkasLink } from "rakkasjs";
+import { Link as RakkasLink } from 'rakkasjs'
+
 export const Link = () => {
-  return <RakkasLink href="" />;
-};
+  return <RakkasLink href="" />
+}

@@ -1,41 +1,40 @@
-import { Link } from "rakkasjs";
+import { Link } from 'rakkasjs'
+import type { FC } from 'react'
+import { useEffect, useState } from 'react'
 
-import type { FC } from "react";
-import { useEffect, useState } from "react";
+import type { NoteModel, Pager } from '@mx-space/api-client'
+import type { TopicModel } from '@mx-space/api-client/types/models/topic'
 
-import type { NoteModel, Pager } from "@mx-space/api-client";
-import type { TopicModel } from "@mx-space/api-client/types/models/topic";
-
-import { Divider, DividerVertical } from "~/components/universal/Divider";
+import { Divider, DividerVertical } from '~/components/universal/Divider'
 import {
   MdiClockOutline,
   MdiFountainPenTip,
-} from "~/components/universal/Icons/for-note";
-import { RelativeTime } from "~/components/universal/RelativeTime";
-import { apiClient } from "~/utils/client";
+} from '~/components/universal/Icons/for-note'
+import { RelativeTime } from '~/components/universal/RelativeTime'
+import { apiClient } from '~/utils/client'
 
-import { NoteTopicMarkdownRender } from "./markdown-render";
+import { NoteTopicMarkdownRender } from './markdown-render'
 
 export const InnerTopicDetail: FC<{ topic: TopicModel }> = (props) => {
-  const { topic } = props;
-  const { id: topicId } = topic;
+  const { topic } = props
+  const { id: topicId } = topic
 
-  const [notes, setNotes] = useState([] as NoteModel[]);
-  const [pagination, setPagination] = useState<Pager>();
+  const [notes, setNotes] = useState([] as NoteModel[])
+  const [pagination, setPagination] = useState<Pager>()
 
   useEffect(() => {
     apiClient.note
       .getNoteByTopicId(topicId, 1, 1, {
-        sortBy: "created",
+        sortBy: 'created',
         sortOrder: -1,
       })
       .then((res) => {
-        const { data, pagination } = res;
+        const { data, pagination } = res
 
-        setNotes(data);
-        setPagination(pagination);
-      });
-  }, [topicId]);
+        setNotes(data)
+        setPagination(pagination)
+      })
+  }, [topicId])
 
   return (
     <div className="flex flex-col w-[400px]">
@@ -88,5 +87,5 @@ export const InnerTopicDetail: FC<{ topic: TopicModel }> = (props) => {
         {pagination?.total} 篇
       </p>
     </div>
-  );
-};
+  )
+}

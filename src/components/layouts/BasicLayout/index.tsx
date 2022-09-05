@@ -1,5 +1,5 @@
-import { observer } from "mobx-react-lite";
-import type { FC } from "react";
+import { observer } from 'mobx-react-lite'
+import type { FC } from 'react'
 import React, {
   Suspense,
   useCallback,
@@ -7,110 +7,107 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import { ShortcutProvider } from "react-shortcut-guide";
+} from 'react'
+import { ShortcutProvider } from 'react-shortcut-guide'
 
-import {
-  BiMoonStarsFill,
-  PhSunBold,
-} from "~/components/universal/Icons/layout";
-import { TrackerAction } from "~/constants/tracker";
-import { useRootStore } from "~/context";
-import { useAnalyze } from "~/hooks/use-analyze";
-import { useMediaToggle } from "~/hooks/use-media-toggle";
-import { useThemeBackground } from "~/hooks/use-theme-background";
-import { springScrollToElement } from "~/utils/spring";
+import { BiMoonStarsFill, PhSunBold } from '~/components/universal/Icons/layout'
+import { TrackerAction } from '~/constants/tracker'
+import { useRootStore } from '~/context'
+import { useAnalyze } from '~/hooks/use-analyze'
+import { useMediaToggle } from '~/hooks/use-media-toggle'
+import { useThemeBackground } from '~/hooks/use-theme-background'
+import { springScrollToElement } from '~/utils/spring'
 
 const Header = React.lazy(() =>
-  import("./Header").then((mo) => ({
+  import('./Header').then((mo) => ({
     default: mo.Header,
-  }))
-);
+  })),
+)
 
 const ColorModeNoticePanel = React.lazy(() =>
-  import("../../universal/Notice").then((mo) => ({
+  import('../../universal/Notice').then((mo) => ({
     default: mo.NoticePanel,
-  }))
-);
+  })),
+)
 
 const SearchHotKey = React.lazy(() =>
-  import("~/components/widgets/Search").then((mo) => ({
+  import('~/components/widgets/Search').then((mo) => ({
     default: mo.SearchHotKey,
-  }))
-);
+  })),
+)
 const Footer = React.lazy(() =>
-  import("./Footer").then((mo) => ({
+  import('./Footer').then((mo) => ({
     default: mo.Footer,
-  }))
-);
+  })),
+)
 const LampSwitch = React.lazy(() =>
-  import("../../universal/LampSwitch").then((mo) => ({
+  import('../../universal/LampSwitch').then((mo) => ({
     default: mo.LampSwitch,
-  }))
-);
+  })),
+)
 const MusicMiniPlayerStoreControlled = React.lazy(() =>
-  import("~/components/widgets/Player").then((mo) => ({
+  import('~/components/widgets/Player').then((mo) => ({
     default: mo.MusicMiniPlayerStoreControlled,
-  }))
-);
+  })),
+)
 export const BasicLayout: FC = observer(({ children }) => {
-  const { appStore, actionStore } = useRootStore();
+  const { appStore, actionStore } = useRootStore()
 
-  const { toggle, value: isDark } = useMediaToggle();
+  const { toggle, value: isDark } = useMediaToggle()
 
-  useThemeBackground();
+  useThemeBackground()
 
-  const [showNotice, setNotice] = useState(false);
+  const [showNotice, setNotice] = useState(false)
   const [tip, setTip] = useState({
-    text: "白天模式",
+    text: '白天模式',
     icon: <PhSunBold />,
-  });
+  })
   const handleChangeColorMode = useCallback(() => {
-    toggle();
+    toggle()
 
     // 去相反的值去比较, 因为 toggle 之后因为 react 的 batch 不会立刻更新
     setTip({
-      text: !isDark ? "夜间模式" : "白天模式",
+      text: !isDark ? '夜间模式' : '白天模式',
       icon: !isDark ? <BiMoonStarsFill /> : <PhSunBold />,
-    });
+    })
 
-    setNotice(true);
-  }, [isDark, toggle]);
-  const actionId = useRef("basic");
+    setNotice(true)
+  }, [isDark, toggle])
+  const actionId = useRef('basic')
   useEffect(() => {
-    actionStore.removeActionById(actionId.current);
+    actionStore.removeActionById(actionId.current)
     if (appStore.isNarrowThanLaptop) {
       const action = {
         id: actionId.current,
         icon:
-          appStore.colorMode === "dark" ? <PhSunBold /> : <BiMoonStarsFill />,
+          appStore.colorMode === 'dark' ? <PhSunBold /> : <BiMoonStarsFill />,
         onClick: handleChangeColorMode,
-      };
-      actionStore.appendActions(action);
+      }
+      actionStore.appendActions(action)
 
       return () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        actionStore.removeActionById(actionId.current);
-      };
+        actionStore.removeActionById(actionId.current)
+      }
     }
   }, [
     actionStore,
     appStore.colorMode,
     appStore.isNarrowThanLaptop,
     handleChangeColorMode,
-  ]);
+  ])
 
   useEffect(() => {
     if (location.hash) {
-      const id = location.hash.replace(/^#/, "");
+      const id = location.hash.replace(/^#/, '')
       setTimeout(() => {
-        const $el = document.getElementById(decodeURIComponent(id));
+        const $el = document.getElementById(decodeURIComponent(id))
 
-        $el && springScrollToElement($el, 1000, -window.innerHeight / 2 + 100);
-      }, 50);
+        $el && springScrollToElement($el, 1000, -window.innerHeight / 2 + 100)
+      }, 50)
     }
-  }, []);
-  const { event } = useAnalyze();
+  }, [])
+  const { event } = useAnalyze()
   return (
     <>
       <div className="inset-0 fixed bg-fixed pointer-events-none transition-opacity duration-500 ease transform-gpu">
@@ -124,16 +121,16 @@ export const BasicLayout: FC = observer(({ children }) => {
       <ShortcutProvider
         options={useMemo(
           () => ({
-            darkMode: "class",
-            darkClassName: "html.dark",
+            darkMode: 'class',
+            darkClassName: 'html.dark',
             onGuidePanelOpen: () => {
               event({
-                label: "Guide 被打开了",
+                label: 'Guide 被打开了',
                 action: TrackerAction.Interaction,
-              });
+              })
             },
           }),
-          []
+          [],
         )}
       />
       <Suspense fallback={null}>
@@ -154,5 +151,5 @@ export const BasicLayout: FC = observer(({ children }) => {
         <SearchHotKey />
       </Suspense>
     </>
-  );
-});
+  )
+})

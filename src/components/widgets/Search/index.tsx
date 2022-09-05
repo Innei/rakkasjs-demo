@@ -1,36 +1,35 @@
-import { CanceledError } from "axios";
-import { clsx } from "clsx";
-import throttle from "lodash-es/throttle";
-import { observer } from "mobx-react-lite";
-import { Link } from "rakkasjs";
+import { CanceledError } from 'axios'
+import { clsx } from 'clsx'
+import throttle from 'lodash-es/throttle'
+import { observer } from 'mobx-react-lite'
+import { Link } from 'rakkasjs'
+import type { FC, KeyboardEventHandler } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { Modifier, useShortcut } from 'react-shortcut-guide'
 
-import type { FC, KeyboardEventHandler } from "react";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { Modifier, useShortcut } from "react-shortcut-guide";
+import { EmptyIcon } from '~/components/universal/Icons/for-comment'
+import { IonSearch } from '~/components/universal/Icons/layout'
+import type { OverlayProps } from '~/components/universal/Overlay'
+import { Overlay } from '~/components/universal/Overlay'
+import { TrackerAction } from '~/constants/tracker'
+import { useAnalyze } from '~/hooks/use-analyze'
+import { useStore } from '~/store'
+import { $axios, apiClient } from '~/utils/client'
 
-import { EmptyIcon } from "~/components/universal/Icons/for-comment";
-import { IonSearch } from "~/components/universal/Icons/layout";
-import type { OverlayProps } from "~/components/universal/Overlay";
-import { Overlay } from "~/components/universal/Overlay";
-import { TrackerAction } from "~/constants/tracker";
-import { useAnalyze } from "~/hooks/use-analyze";
-import { useStore } from "~/store";
-import { $axios, apiClient } from "~/utils/client";
-
-import styles from "./index.module.css";
+import styles from './index.module.css'
 
 export type SearchPanelProps = {
-  defaultKeyword?: string;
-};
+  defaultKeyword?: string
+}
 
 type SearchListType = {
-  title: string;
-  subtitle?: string;
-  url: string;
-  id: string;
-};
+  title: string
+  subtitle?: string
+  url: string
+  id: string
+}
 
-let controller: AbortController | null;
+let controller: AbortController | null
 const search = throttle((keyword: string) => {
   return new Promise<
     | Awaited<ReturnType<typeof apiClient.search.searchByAlgolia>>
@@ -38,170 +37,170 @@ const search = throttle((keyword: string) => {
     | undefined
   >((resolve, reject) => {
     if (!keyword) {
-      resolve(null);
-      return;
+      resolve(null)
+      return
     }
 
     if (controller) {
-      controller.abort();
+      controller.abort()
     }
 
-    controller = new AbortController();
+    controller = new AbortController()
 
     $axios
       .get<Awaited<ReturnType<typeof apiClient.search.searchByAlgolia>>>(
-        apiClient.search.proxy("algolia").toString(true),
+        apiClient.search.proxy('algolia').toString(true),
         {
           signal: controller.signal,
           params: {
             keyword,
           },
-        }
+        },
       )
       .then((data) => {
-        resolve(data.data);
+        resolve(data.data)
       })
       .catch((err) => {
         if (!err) {
-          return resolve(undefined);
+          return resolve(undefined)
         }
         if (err instanceof CanceledError) {
-          return resolve(undefined);
+          return resolve(undefined)
         }
-        reject(err);
-      });
-  });
-}, 1000);
+        reject(err)
+      })
+  })
+}, 1000)
 
 export const SearchPanel: FC<SearchPanelProps> = memo((props) => {
-  const { defaultKeyword } = props;
-  const [keyword, setKeyword] = useState(defaultKeyword || "");
+  const { defaultKeyword } = props
+  const [keyword, setKeyword] = useState(defaultKeyword || '')
 
-  const [loading, setLoading] = useState(false);
-  const [list, setList] = useState<SearchListType[]>([]);
-  const { event } = useAnalyze();
+  const [loading, setLoading] = useState(false)
+  const [list, setList] = useState<SearchListType[]>([])
+  const { event } = useAnalyze()
   useEffect(() => {
     if (!keyword) {
-      return;
+      return
     }
-    setLoading(true);
-    setCurrentSelect(0);
+    setLoading(true)
+    setCurrentSelect(0)
 
     search(keyword)
       ?.then((res) => {
-        if (typeof res === "undefined") {
-          return;
+        if (typeof res === 'undefined') {
+          return
         }
 
         event({
           action: TrackerAction.Interaction,
           label: `搜索触发：${keyword}`,
-        });
+        })
         if (res === null) {
-          setLoading(false);
-          setList([]);
-          return;
+          setLoading(false)
+          setList([])
+          return
         }
-        const data = res.data;
+        const data = res.data
         if (!data) {
-          setLoading(false);
-          return;
+          setLoading(false)
+          return
         }
         const _list: SearchListType[] = data.map((item) => {
           switch (item.type) {
-            case "post":
+            case 'post':
               return {
                 title: item.title,
                 subtitle: item.category.name,
                 id: item.id,
                 url: `/posts/${item.category.slug}/${item.slug}`,
-              };
-            case "note":
+              }
+            case 'note':
               return {
                 title: item.title,
-                subtitle: "生活记录",
+                subtitle: '生活记录',
                 id: item.id,
                 url: `/notes/${item.nid}`,
-              };
-            case "page":
+              }
+            case 'page':
               return {
                 title: item.title,
-                subtitle: "页面",
+                subtitle: '页面',
                 id: item.id,
                 url: `/pages/${item.slug}`,
-              };
+              }
           }
-        });
+        })
 
-        setList(_list);
+        setList(_list)
 
-        setLoading(false);
+        setLoading(false)
       })
       .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, [keyword]);
+        console.log(err)
+        setLoading(false)
+      })
+  }, [keyword])
 
-  const [currentSelect, setCurrentSelect] = useState(0);
-  const listRef = useRef<HTMLUListElement>(null);
+  const [currentSelect, setCurrentSelect] = useState(0)
+  const listRef = useRef<HTMLUListElement>(null)
 
-  const trackerOne = useRef(false);
+  const trackerOne = useRef(false)
   const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       if (!listRef.current) {
-        return;
+        return
       }
-      const $ = listRef.current;
+      const $ = listRef.current
 
       const tracker = () => {
         if (trackerOne.current) {
-          return;
+          return
         }
 
         event({
           action: TrackerAction.Interaction,
           label: `搜索触发键盘操作：${e.key}`,
-        });
-        trackerOne.current = true;
-      };
+        })
+        trackerOne.current = true
+      }
       switch (e.key) {
-        case "Enter": {
-          (
+        case 'Enter': {
+          ;(
             ($.children.item(currentSelect) as HTMLLIElement).children.item(
-              0
+              0,
             ) as HTMLLinkElement
-          )?.click();
-          tracker();
-          break;
+          )?.click()
+          tracker()
+          break
         }
-        case "ArrowDown": {
+        case 'ArrowDown': {
           setCurrentSelect((currentSelect) => {
-            const index = currentSelect + 1;
-            return index ? index % list.length : 0;
-          });
-          tracker();
-          break;
+            const index = currentSelect + 1
+            return index ? index % list.length : 0
+          })
+          tracker()
+          break
         }
-        case "ArrowUp": {
+        case 'ArrowUp': {
           setCurrentSelect((currentSelect) => {
-            const index = currentSelect - 1;
-            return index < 0 ? list.length - 1 : index;
-          });
-          tracker();
-          break;
+            const index = currentSelect - 1
+            return index < 0 ? list.length - 1 : index
+          })
+          tracker()
+          break
         }
       }
 
       $.children.item(currentSelect)?.scrollIntoView({
-        behavior: "smooth",
-      });
+        behavior: 'smooth',
+      })
     },
-    [currentSelect, list.length]
-  );
+    [currentSelect, list.length],
+  )
 
   return (
-    <div className={styles["root"]} onKeyDown={handleKeyDown} role="dialog">
+    <div className={styles['root']} onKeyDown={handleKeyDown} role="dialog">
       <input
         autoFocus
         className="p-4 px-5 w-full text-[16px] leading-4 bg-transparent"
@@ -211,16 +210,16 @@ export const SearchPanel: FC<SearchPanelProps> = memo((props) => {
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={(e) => {
           if (
-            e.key === "ArrowDown" ||
-            e.key === "ArrowUp" ||
-            e.key === "Enter"
+            e.key === 'ArrowDown' ||
+            e.key === 'ArrowUp' ||
+            e.key === 'Enter'
           ) {
-            e.preventDefault();
+            e.preventDefault()
           }
         }}
       />
       <div
-        className={clsx(styles["status-bar"], loading && styles["loading"])}
+        className={clsx(styles['status-bar'], loading && styles['loading'])}
       />
       <div className="flex-grow flex-shrink relative overflow-overlay">
         <ul className="py-4 px-3 h-full" ref={listRef}>
@@ -232,7 +231,7 @@ export const SearchPanel: FC<SearchPanelProps> = memo((props) => {
                 ) : !loading ? (
                   <EmptyIcon />
                 ) : null}
-                <span>{keyword && "无内容"}</span>
+                <span>{keyword && '无内容'}</span>
               </div>
             </div>
           ) : (
@@ -241,14 +240,14 @@ export const SearchPanel: FC<SearchPanelProps> = memo((props) => {
                 <li
                   key={item.id}
                   onMouseOver={throttle(() => {
-                    setCurrentSelect(index);
+                    setCurrentSelect(index)
                   }, 40)}
                 >
                   <Link
                     href={item.url}
                     className={clsx(
-                      styles["item"],
-                      index === currentSelect && styles["active"]
+                      styles['item'],
+                      index === currentSelect && styles['active'],
                     )}
                   >
                     <span className="block flex-1 flex-shrink-0 truncate">
@@ -259,7 +258,7 @@ export const SearchPanel: FC<SearchPanelProps> = memo((props) => {
                     </span>
                   </Link>
                 </li>
-              );
+              )
             })
           )}
         </ul>
@@ -283,90 +282,90 @@ export const SearchPanel: FC<SearchPanelProps> = memo((props) => {
         </a>
       </div>
     </div>
-  );
-});
+  )
+})
 export const SearchOverlay: FC<OverlayProps> = observer((props) => {
-  const { ...rest } = props;
+  const { ...rest } = props
 
   const {
     appUIStore: {
       viewport: { mobile },
     },
-  } = useStore();
+  } = useStore()
   useShortcut(
-    "Escape",
+    'Escape',
     [Modifier.None],
     () => {
-      props.onClose();
+      props.onClose()
     },
-    "关闭搜索框",
-    { hiddenInPanel: true }
-  );
+    '关闭搜索框',
+    { hiddenInPanel: true },
+  )
   return (
     <Overlay
       center={!mobile}
-      standaloneWrapperClassName={clsx(mobile && "items-start justify-center")}
+      standaloneWrapperClassName={clsx(mobile && 'items-start justify-center')}
       {...rest}
     >
       <div
         className={clsx(
-          "transition duration-200 transition-opacity",
-          !props.show && "opacity-0"
+          'transition duration-200 transition-opacity',
+          !props.show && 'opacity-0',
         )}
       >
         <SearchPanel />
       </div>
     </Overlay>
-  );
-});
+  )
+})
 export const SearchHotKey: FC = memo(() => {
-  const { event } = useAnalyze();
-  const [show, setShow] = useState(false);
+  const { event } = useAnalyze()
+  const [show, setShow] = useState(false)
   const handler = () => {
-    event({ action: TrackerAction.Click, label: "cmd+k" });
-    setShow(true);
-  };
-  useShortcut("K", [Modifier.Command], handler, "搜索");
-  useShortcut("K", [Modifier.Control], handler, "搜索", {
+    event({ action: TrackerAction.Click, label: 'cmd+k' })
+    setShow(true)
+  }
+  useShortcut('K', [Modifier.Command], handler, '搜索')
+  useShortcut('K', [Modifier.Control], handler, '搜索', {
     hiddenInPanel: true,
-  });
-  useShortcut("/", [Modifier.None], handler, "搜索");
+  })
+  useShortcut('/', [Modifier.None], handler, '搜索')
 
-  return <SearchOverlay show={show} onClose={() => setShow(false)} />;
-});
+  return <SearchOverlay show={show} onClose={() => setShow(false)} />
+})
 
 export const SearchFAB = memo(() => {
-  const [show, setShow] = useState(false);
-  const { actionStore } = useStore();
-  const actionId = useRef("search-fab");
-  const { event } = useAnalyze();
+  const [show, setShow] = useState(false)
+  const { actionStore } = useStore()
+  const actionId = useRef('search-fab')
+  const { event } = useAnalyze()
   useEffect(() => {
     if (show) {
       event({
         action: TrackerAction.Impression,
         label: `搜索框被唤醒`,
-      });
+      })
     }
-  }, [show]);
+  }, [show])
   useEffect(() => {
-    actionStore.removeActionById(actionId.current);
+    actionStore.removeActionById(actionId.current)
     const action = {
       icon: <IonSearch />,
       id: actionId.current,
       onClick: () => {
-        setShow(true);
+        setShow(true)
       },
-    };
+    }
     requestAnimationFrame(() => {
-      actionStore.appendActions(action);
-    });
+      actionStore.appendActions(action)
+    })
 
     return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      actionStore.removeActionById(actionId.current);
-    };
+      actionStore.removeActionById(actionId.current)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
-  return <SearchOverlay show={show} onClose={() => setShow(false)} />;
-});
+  return <SearchOverlay show={show} onClose={() => setShow(false)} />
+})

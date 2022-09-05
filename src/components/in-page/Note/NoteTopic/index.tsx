@@ -1,32 +1,31 @@
-import { Link } from "rakkasjs";
+import { Link } from 'rakkasjs'
+import type { FC } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import type { FC } from "react";
-import { useCallback, useMemo } from "react";
+import type { TopicModel } from '@mx-space/api-client/types/models/topic'
 
-import type { TopicModel } from "@mx-space/api-client/types/models/topic";
+import { ImpressionView } from '~/components/biz/ImpressionView'
+import { Avatar } from '~/components/universal/Avatar'
+import { Divider } from '~/components/universal/Divider'
+import { FloatPopover } from '~/components/universal/FloatPopover'
+import { TrackerAction } from '~/constants/tracker'
+import { useAnalyze } from '~/hooks/use-analyze'
+import { textToBigCharOrWord } from '~/utils/word'
 
-import { ImpressionView } from "~/components/biz/ImpressionView";
-import { Avatar } from "~/components/universal/Avatar";
-import { Divider } from "~/components/universal/Divider";
-import { FloatPopover } from "~/components/universal/FloatPopover";
-import { TrackerAction } from "~/constants/tracker";
-import { useAnalyze } from "~/hooks/use-analyze";
-import { textToBigCharOrWord } from "~/utils/word";
-
-import { InnerTopicDetail } from "./inner-detail";
-import { NoteTopicMarkdownRender } from "./markdown-render";
+import { InnerTopicDetail } from './inner-detail'
+import { NoteTopicMarkdownRender } from './markdown-render'
 
 export const NoteTopic: FC<{ noteId: string; topic: TopicModel }> = (props) => {
-  const { topic } = props;
-  const { icon, name, introduce } = topic;
+  const { topic } = props
+  const { icon, name, introduce } = topic
 
-  const { event } = useAnalyze();
+  const { event } = useAnalyze()
   const handleTrackerClick = useCallback(() => {
     event({
       action: TrackerAction.Click,
       label: `话题点击 进入详情 / ${name}`,
-    });
-  }, [name]);
+    })
+  }, [name])
 
   return (
     <ImpressionView
@@ -47,8 +46,8 @@ export const NoteTopic: FC<{ noteId: string; topic: TopicModel }> = (props) => {
             useRandomColor={false}
             shadow={false}
             wrapperProps={useMemo(
-              () => ({ className: "text-white dark:text-opacity-80" }),
-              []
+              () => ({ className: 'text-white dark:text-opacity-80' }),
+              [],
             )}
           />
           <div className="flex-grow flex flex-col self-start">
@@ -80,5 +79,5 @@ export const NoteTopic: FC<{ noteId: string; topic: TopicModel }> = (props) => {
         </div>
       </div>
     </ImpressionView>
-  );
-};
+  )
+}

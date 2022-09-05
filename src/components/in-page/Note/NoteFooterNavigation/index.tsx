@@ -1,29 +1,29 @@
-import { observer } from "mobx-react-lite";
-import { useRouter } from "~/hooks/use-router.ts";
-import type { FC } from "react";
+import { observer } from 'mobx-react-lite'
+import type { FC } from 'react'
 
-import type { NoteModel } from "@mx-space/api-client";
+import type { NoteModel } from '@mx-space/api-client'
 
-import { Divider } from "~/components/universal/Divider";
-import { MdiClockTimeThreeOutline } from "~/components/universal/Icons/for-note";
-import { TrackerAction } from "~/constants/tracker";
-import { useAnalyze } from "~/hooks/use-analyze";
-import { useStore } from "~/store";
-import { springScrollToTop } from "~/utils/spring";
-import { noop } from "~/utils/utils";
+import { Divider } from '~/components/universal/Divider'
+import { MdiClockTimeThreeOutline } from '~/components/universal/Icons/for-note'
+import { TrackerAction } from '~/constants/tracker'
+import { useAnalyze } from '~/hooks/use-analyze'
+import { useRouter } from '~/hooks/use-router.ts'
+import { useStore } from '~/store'
+import { springScrollToTop } from '~/utils/spring'
+import { noop } from '~/utils/utils'
 
 import {
   IcRoundKeyboardDoubleArrowLeft,
   IcRoundKeyboardDoubleArrowRight,
-} from "../../../universal/Icons/arrow";
+} from '../../../universal/Icons/arrow'
 
 export const NoteFooterNavigation: FC<{ id: string }> = observer(({ id }) => {
-  const { noteStore } = useStore();
+  const { noteStore } = useStore()
   const [prev, next] =
     noteStore.relationMap.get(id) ||
-    ([noop, noop] as [Partial<NoteModel>, Partial<NoteModel>]);
-  const router = useRouter();
-  const { event } = useAnalyze();
+    ([noop, noop] as [Partial<NoteModel>, Partial<NoteModel>])
+  const router = useRouter()
+  const { event } = useAnalyze()
   return (
     <>
       {(!!next || !!prev) && (
@@ -38,10 +38,10 @@ export const NoteFooterNavigation: FC<{ id: string }> = observer(({ id }) => {
                 <>
                   <div
                     tabIndex={1}
-                    role={"button"}
+                    role={'button'}
                     className="hover:text-primary"
                     onClick={() => {
-                      router.push("/notes/[id]", `/notes/${next.nid}`);
+                      router.push('/notes/[id]', `/notes/${next.nid}`)
                     }}
                   >
                     <IcRoundKeyboardDoubleArrowLeft />
@@ -54,10 +54,10 @@ export const NoteFooterNavigation: FC<{ id: string }> = observer(({ id }) => {
                 <>
                   <div
                     tabIndex={1}
-                    role={"button"}
+                    role={'button'}
                     className="hover:text-primary"
                     onClick={() => {
-                      router.push("/notes/[id]", `/notes/${prev.nid}`);
+                      router.push('/notes/[id]', `/notes/${prev.nid}`)
                     }}
                   >
                     <span>后一篇</span>
@@ -68,18 +68,18 @@ export const NoteFooterNavigation: FC<{ id: string }> = observer(({ id }) => {
             </div>
             <div
               tabIndex={1}
-              role={"button"}
+              role={'button'}
               className="opacity-80 text-pink hover:text-primary absolute left-1/2 top-0 bottom-0 flex items-center -translate-x-1/2 transform space-x-2"
               onClick={() => {
-                const note = noteStore.get(id);
+                const note = noteStore.get(id)
 
                 event({
                   action: TrackerAction.Click,
                   label: `时间线点击 - ${note?.nid} - ${note?.title}`,
-                });
+                })
 
-                springScrollToTop();
-                router.push(`/timeline?type=note&id=${id}`);
+                springScrollToTop()
+                router.push(`/timeline?type=note&id=${id}`)
               }}
             >
               <span>时间线</span>
@@ -89,17 +89,17 @@ export const NoteFooterNavigation: FC<{ id: string }> = observer(({ id }) => {
         </>
       )}
     </>
-  );
-});
+  )
+})
 
 export const NoteFooterNavigationBarForMobile: typeof NoteFooterNavigation =
   observer((props) => {
     const {
       appUIStore: { isNarrowThanLaptop: isWiderThanLaptop },
-    } = useStore();
+    } = useStore()
 
     if (isWiderThanLaptop) {
-      return <NoteFooterNavigation {...props} />;
+      return <NoteFooterNavigation {...props} />
     }
-    return null;
-  });
+    return null
+  })
