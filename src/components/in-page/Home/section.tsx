@@ -1,6 +1,5 @@
 import shuffle from 'lodash-es/shuffle'
-import Router from 'next/router'
-import { useIndexViewContext } from 'pages'
+import { navigate } from 'rakkasjs'
 import type { FC } from 'react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { TransitionGroup } from 'react-transition-group'
@@ -17,6 +16,7 @@ import { LikeButton } from '~/components/universal/LikeButton'
 import { NoticePanel } from '~/components/universal/Notice'
 import { BottomUpTransitionView } from '~/components/universal/Transition/bottom-up'
 import { useThemeConfig } from '~/hooks/use-initial-data'
+import { useIndexViewContext } from '~/routes/index.page'
 import { apiClient } from '~/utils/client'
 import { stopEventDefault } from '~/utils/dom'
 import { getRandomImage } from '~/utils/images'
@@ -107,7 +107,7 @@ const _Sections: FC<AggregateTop> = ({ notes, posts }) => {
         href="/message"
         onClick={useCallback((e) => {
           stopEventDefault(e)
-          Router.push('/[page]', '/message')
+          navigate('/message')
         }, [])}
       />
       <SectionCard
@@ -117,7 +117,7 @@ const _Sections: FC<AggregateTop> = ({ notes, posts }) => {
         href="/about"
         onClick={useCallback((e) => {
           stopEventDefault(e)
-          Router.push('/[page]', '/about')
+          navigate('/about')
         }, [])}
       />
       <SectionCard

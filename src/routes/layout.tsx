@@ -1,5 +1,5 @@
-// This is the main layout of our app. It renders the header and the footer.
-import { ErrorBoundary, Layout } from 'rakkasjs'
+import type { Layout } from 'rakkasjs'
+import { ErrorBoundary } from 'rakkasjs'
 import { useRef } from 'react'
 import type { ToastContainerProps } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
@@ -10,17 +10,15 @@ import '../assets/styles/main.css'
 import { AppLayout } from '~/components/layouts/AppLayout'
 import { BasicLayout } from '~/components/layouts/BasicLayout'
 import { InitialContextProvider, RootStoreProvider } from '~/context'
+import { ParamsContext } from '~/context/params'
 
-// Vite supports CSS modules out of the box!
-
-const MainLayout: Layout = ({ children }) => {
+const MainLayout: Layout = ({ children, params }) => {
   return (
     <>
       <ErrorBoundary
         fallbackRender={({ error, resetErrorBoundary }) => {
           return (
             <div>
-              {/* {error.status && <ResponseHeaders status={error.status} />} */}
               <h1>An error has occurred</h1>
               <pre>{error.message}</pre>
               <button
@@ -43,12 +41,14 @@ const MainLayout: Layout = ({ children }) => {
         </head>
         <body id={'app'} className="loading">
           <InitialContextProvider>
-            <RootStoreProvider>
-              <BasicLayout>
-                <AppLayout>{children}</AppLayout>
-              </BasicLayout>
-              <ToastProvider />
-            </RootStoreProvider>
+            <ParamsContext.Provider value={params}>
+              <RootStoreProvider>
+                <BasicLayout>
+                  <AppLayout>{children}</AppLayout>
+                </BasicLayout>
+                <ToastProvider />
+              </RootStoreProvider>
+            </ParamsContext.Provider>
           </InitialContextProvider>
         </body>
       </ErrorBoundary>

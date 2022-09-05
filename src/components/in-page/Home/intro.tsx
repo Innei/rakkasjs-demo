@@ -8,7 +8,7 @@ import { FloatPopover } from '~/components/universal/FloatPopover'
 import { FontIcon } from '~/components/universal/FontIcon'
 import { BottomUpTransitionView } from '~/components/universal/Transition/bottom-up'
 import { useThemeConfig } from '~/hooks/use-initial-data'
-import { useIndexViewContext } from '~/pages'
+import { useIndexViewContext } from '~/routes/index.page'
 import { useStore } from '~/store'
 import { NoSSRWrapper } from '~/utils/no-ssr'
 
