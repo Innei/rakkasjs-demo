@@ -22,8 +22,12 @@ export const useRouter = () => {
     ...pageConext.url,
     asPath: window.location.pathname,
     path: window.location.pathname,
+    url: pageConext.url,
 
     params,
-    query: Object.fromEntries(pageConext.url.searchParams.entries()),
+    query: {
+      ...params,
+      ...Object.fromEntries(pageConext.url.searchParams.entries()),
+    },
   }).current
 }

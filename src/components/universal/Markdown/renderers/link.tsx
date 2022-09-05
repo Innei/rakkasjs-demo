@@ -1,4 +1,4 @@
-import Router from 'next/router'
+import { navigate } from 'rakkasjs'
 import type { FC } from 'react'
 import { memo, useCallback, useMemo } from 'react'
 
@@ -51,15 +51,15 @@ export const MLink: FC<{
 
         switch (headPath) {
           case 'posts': {
-            Router.push('/posts/[category]/[slug]', toUrlParser.pathname)
+            navigate(toUrlParser.pathname)
             break
           }
           case 'notes': {
-            Router.push('/notes/[id]', toUrlParser.pathname)
+            navigate(toUrlParser.pathname)
             break
           }
           case 'category': {
-            Router.push('/categories/[slug]', toUrlParser.pathname)
+            navigate(toUrlParser.pathname)
             break
           }
           default: {

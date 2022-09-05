@@ -3,7 +3,6 @@ import { clsx } from 'clsx'
 import type { MarkdownToJSX } from 'markdown-to-jsx'
 import { compiler, sanitizeUrl } from 'markdown-to-jsx'
 import { observer } from 'mobx-react-lite'
-import dynamic from 'next/dynamic'
 import type { FC } from 'react'
 import React, {
   Fragment,
@@ -19,6 +18,7 @@ import { ErrorBoundary } from '~/components/app/ErrorBoundary'
 import type { TocProps } from '~/components/widgets/Toc'
 import { useStore } from '~/store'
 import { isDev } from '~/utils/env'
+import { NoSSRWrapper } from '~/utils/no-ssr'
 import { springScrollToElement } from '~/utils/spring'
 
 import { CodeBlock } from '../CodeBlock'
@@ -46,12 +46,13 @@ import { MDetails } from './renderers/collapse'
 import { MFootNote } from './renderers/footnotes'
 import { LinkCard } from './renderers/link-card'
 
-const Toc = dynamic(
-  () => import('~/components/widgets/Toc').then((m) => m.Toc),
-  {
-    ssr: false,
-  },
+const TocO = React.lazy(() =>
+  import('~/components/widgets/Toc').then((m) => ({
+    default: m.Toc,
+  })),
 )
+
+const Toc = NoSSRWrapper(TocO)
 interface MdProps {
   value?: string
   toc?: boolean
@@ -221,7 +222,7 @@ export const Markdown: FC<MdProps & MarkdownToJSX.Options> = memo((props) => {
 
             return (
               <Tag key={state?.key} start={node.start}>
-                {node.items.map((item, i) => {
+                {node.items.map((item: any, i: number) => {
                   let className = ''
                   if (item[0]?.type == 'gfmTask') {
                     className = 'list-none flex items-center'

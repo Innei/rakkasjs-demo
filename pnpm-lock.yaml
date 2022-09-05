@@ -15,6 +15,7 @@ specifiers:
   '@types/react': 17.0.48
   '@types/react-dom': ^18.0.6
   '@types/react-transition-group': 4.4.5
+  '@types/remove-markdown': 0.3.1
   axios: ^0.27.2
   clsx: 1.2.1
   css-spring: 4.1.0
@@ -102,6 +103,7 @@ devDependencies:
   '@types/react': 17.0.48
   '@types/react-dom': 18.0.6
   '@types/react-transition-group': 4.4.5
+  '@types/remove-markdown': 0.3.1
   eslint: 8.23.0
   postcss: 8.4.16
   postcss-import: 14.1.0_postcss@8.4.16
@@ -864,6 +866,10 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.0
+
+  /@types/remove-markdown/0.3.1:
+    resolution: {integrity: sha512-JpJNEJEsmmltyL2LdE8KRjJ0L2ad5vgLibqNj85clohT9AyTrfN6jvHxStPshDkmtcL/ShFu0p2tbY7DBS1mqQ==}
+    dev: true
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}

@@ -9,6 +9,7 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
+    "noImplicitAny": false,
     "baseUrl": "./src",
     "types": [
       "vite/client"
