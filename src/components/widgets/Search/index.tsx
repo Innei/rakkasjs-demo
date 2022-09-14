@@ -1,4 +1,3 @@
-import { CanceledError } from 'axios'
 import { clsx } from 'clsx'
 import throttle from 'lodash-es/throttle'
 import { observer } from 'mobx-react-lite'
@@ -14,7 +13,7 @@ import { Overlay } from '~/components/universal/Overlay'
 import { TrackerAction } from '~/constants/tracker'
 import { useAnalyze } from '~/hooks/use-analyze'
 import { useStore } from '~/store'
-import { $axios, apiClient } from '~/utils/client'
+import { $ky, apiClient } from '~/utils/client'
 
 import styles from './index.module.css'
 
@@ -47,26 +46,28 @@ const search = throttle((keyword: string) => {
 
     controller = new AbortController()
 
-    $axios
-      .get<Awaited<ReturnType<typeof apiClient.search.searchByAlgolia>>>(
-        apiClient.search.proxy('algolia').toString(true),
-        {
-          signal: controller.signal,
-          params: {
-            keyword,
-          },
+    $ky
+      .get(apiClient.search.proxy('algolia').toString(true), {
+        signal: controller.signal,
+        searchParams: {
+          keyword,
         },
-      )
-      .then((data) => {
-        resolve(data.data)
+      })
+      .then(async (data) => {
+        resolve(
+          await data.json<
+            ReturnType<typeof apiClient.search.searchByAlgolia>
+          >(),
+        )
       })
       .catch((err) => {
         if (!err) {
           return resolve(undefined)
         }
-        if (err instanceof CanceledError) {
-          return resolve(undefined)
-        }
+        // TODO
+        // if (err instanceof CanceledError) {
+        //   return resolve(undefined)
+        // }
         reject(err)
       })
   })

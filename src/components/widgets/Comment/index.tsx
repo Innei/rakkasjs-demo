@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { message } from 'react-message-popup'
-import { useHash } from 'react-use'
+import { useHash } from 'react-use/esm/useHash'
 
 import type { Pager } from '@mx-space/api-client'
 

@@ -1,11 +1,11 @@
-import axios from 'axios'
 import clsx from 'clsx'
+import kyUniversal from 'ky-universal'
 import type { FC } from 'react'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import RemoveMarkdown from 'remove-markdown'
 
-import { camelcaseKeys } from '@mx-space/api-client'
+import { simpleCamelcaseKeys as camelcaseKeys } from '@mx-space/api-client'
 
 import { useIsMounted } from '~/hooks/use-is-mounted'
 import { useSafeSetState } from '~/hooks/use-safe-setState'
@@ -104,9 +104,10 @@ export const LinkCard: FC<LinkCardProps> = (props) => {
 
         fetchFnRef.current = async () => {
           // https://api.github.com/repos/mx-space/core
-          const data = await axios
-            .get<any>(`https://api.github.com/repos/${namespace}/${repo}`)
-            .then((data) => camelcaseKeys(data.data, { deep: true }))
+          const data = await kyUniversal
+            .get(`https://api.github.com/repos/${namespace}/${repo}`)
+            .then((res) => res.json<any>())
+            .then((data) => camelcaseKeys(data))
 
           setCardInfo({
             image: data.owner.avatarUrl,

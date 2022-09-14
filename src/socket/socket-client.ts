@@ -1,7 +1,7 @@
 import type { Socket } from 'socket.io-client'
 import { io } from 'socket.io-client'
 
-import { camelcaseKeys } from '@mx-space/api-client'
+import { simpleCamelcaseKeys as camelcaseKeys } from '@mx-space/api-client'
 
 import { GATEWAY_URL } from '~/constants/env'
 import type { EventTypes } from '~/types/events'

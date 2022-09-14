@@ -11,7 +11,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useAudio } from 'react-use'
+import useAudio from 'react-use/esm/useAudio'
 
 import { RootPortal } from '~/components/universal/Portal'
 import { TrackerAction } from '~/constants/tracker'
