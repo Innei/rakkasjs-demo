@@ -17,6 +17,9 @@ export default ({ mode }) => {
   process.env = loadEnv(mode, process.cwd())
   return defineConfig({
     plugins: [tsconfigPaths(), rakkas(), WindiCSS()],
+    build: {
+      target: 'esnext',
+    },
     ssr: {
       noExternal: [...noExternalSet.values()],
     },
