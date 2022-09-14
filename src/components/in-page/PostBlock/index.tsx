@@ -1,8 +1,7 @@
 import { clsx } from 'clsx'
 import { observer } from 'mobx-react-lite'
-import Router from 'next/router'
 import type { FC } from 'react'
-import React, { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import removeMd from 'remove-markdown'
 
 import type { PostModel } from '@mx-space/api-client'
@@ -10,6 +9,7 @@ import type { PostModel } from '@mx-space/api-client'
 import { IconTransition } from '~/components/universal/IconTransition'
 import { PhPushPin, PhPushPinFill } from '~/components/universal/Icons/for-post'
 import { useInitialData } from '~/hooks/use-initial-data'
+import { useRouter } from '~/hooks/use-router'
 import { useStore } from '~/store'
 import { apiClient } from '~/utils/client'
 import { springScrollToTop } from '~/utils/spring'
@@ -47,10 +47,10 @@ export const PostBlock: FC<PostBlockProps> = observer((props) => {
     })
     return map
   }, [initialData.categories])
-
+  const router = useRouter()
   const goToPost = useCallback(() => {
     const categorySlug = post.category?.slug ?? categoryMap.get(post.categoryId)
-    Router.push('/posts/[category]/[slug]', `/posts/${categorySlug}/${slug}`)
+    router.push(`/posts/${categorySlug}/${slug}`)
     springScrollToTop()
   }, [categoryMap, post.category?.slug, post.categoryId, slug])
   const hasImage = post.images?.length > 0 && post.images[0].src

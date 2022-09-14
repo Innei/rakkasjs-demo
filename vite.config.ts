@@ -4,14 +4,29 @@ import { defineConfig, loadEnv } from 'vite'
 import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-import pkg from './package.json'
-
 dns.setDefaultResultOrder('verbatim')
 
-const noExternalSet = new Set(Object.keys(pkg.dependencies))
-
-noExternalSet.delete('react')
-noExternalSet.delete('react-dom')
+// const noExternalSet = new Set(Object.keys(pkg.dependencies))
+const noExternalSet = new Set(['react-use', 'axios', 'rakkas-seo'])
+// ;[
+//   'react',
+//   'react-dom',
+//   'react-toastify',
+//   'react-shortcut-guide',
+//   'react-message-popup',
+//   'react-intersection-observer',
+//   'markdown-to-jsx',
+//   'ky',
+//   'ky-universal',
+//   'css-spring',
+//   'react-transition-group',
+//   'qier-progress',
+//   'remove-markdown',
+//   'react-collapse',
+//   'randomcolor',
+// ].forEach((name) => {
+//   noExternalSet.delete(name)
+// })
 
 export default ({ mode }) => {
   process.env = loadEnv(mode, process.cwd())
